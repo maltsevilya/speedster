@@ -34,6 +34,13 @@ let touchStartX = 0;
 let touchStartY = 0;
 let touchStartTime = 0;
 
+// Audio elements
+let bgMusic;
+let crashSound;
+let scoreSound;
+let accelerateSound;
+let isMuted = false;
+
 // Initialize the game
 function init() {
     canvas = document.getElementById('gameCanvas');
@@ -63,8 +70,105 @@ function init() {
     setupMobileControls();
     setupSwipeControls();
     
+    // Initialize audio
+    initAudio();
+    
     // Start game loop
     gameLoop();
+}
+
+function initAudio() {
+    // Get audio elements
+    bgMusic = document.getElementById('bgMusic');
+    crashSound = document.getElementById('crashSound');
+    scoreSound = document.getElementById('scoreSound');
+    accelerateSound = document.getElementById('accelerateSound');
+    
+    // Set volumes
+    if (bgMusic) bgMusic.volume = 0.3;
+    if (crashSound) crashSound.volume = 0.5;
+    if (scoreSound) scoreSound.volume = 0.4;
+    if (accelerateSound) accelerateSound.volume = 0.2;
+    
+    // Setup mute button
+    const muteButton = document.getElementById('muteButton');
+    if (muteButton) {
+        muteButton.addEventListener('click', toggleMute);
+    }
+    
+    // Load muted state from localStorage
+    const savedMuteState = localStorage.getItem('gameIsMuted');
+    if (savedMuteState === 'true') {
+        isMuted = true;
+        updateMuteButton();
+    }
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    localStorage.setItem('gameIsMuted', isMuted);
+    updateMuteButton();
+    
+    if (isMuted) {
+        stopAllSounds();
+    } else if (gameState === 'playing') {
+        playBackgroundMusic();
+    }
+}
+
+function updateMuteButton() {
+    const soundOnIcon = document.getElementById('soundOnIcon');
+    const soundOffIcon = document.getElementById('soundOffIcon');
+    
+    if (soundOnIcon && soundOffIcon) {
+        if (isMuted) {
+            soundOnIcon.style.display = 'none';
+            soundOffIcon.style.display = 'block';
+        } else {
+            soundOnIcon.style.display = 'block';
+            soundOffIcon.style.display = 'none';
+        }
+    }
+}
+
+function playBackgroundMusic() {
+    if (!isMuted && bgMusic) {
+        bgMusic.play().catch(err => {
+            // Auto-play might be blocked by browser
+            console.log('Background music autoplay prevented');
+        });
+    }
+}
+
+function stopBackgroundMusic() {
+    if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+    }
+}
+
+function playSound(sound) {
+    if (!isMuted && sound) {
+        sound.currentTime = 0;
+        sound.play().catch(err => {
+            console.log('Sound play prevented');
+        });
+    }
+}
+
+function stopAllSounds() {
+    if (bgMusic) {
+        bgMusic.pause();
+    }
+    if (crashSound) {
+        crashSound.pause();
+    }
+    if (scoreSound) {
+        scoreSound.pause();
+    }
+    if (accelerateSound) {
+        accelerateSound.pause();
+    }
 }
 
 function setupMobileControls() {
@@ -249,6 +353,9 @@ function startGame() {
     
     document.getElementById('startScreen').classList.remove('active');
     updateUI();
+    
+    // Start background music
+    playBackgroundMusic();
 }
 
 function restartGame() {
@@ -372,6 +479,8 @@ function updateObstacles() {
         if (!obstacle.passed && obstacle.y > car.y + car.height) {
             obstacle.passed = true;
             score += 10;
+            // Play score sound
+            playSound(scoreSound);
         }
         
         // Remove obstacles that are off screen
@@ -403,6 +512,10 @@ function gameOver() {
     document.getElementById('finalScore').textContent = score;
     document.getElementById('finalDistance').textContent = Math.floor(distance) + 'm';
     document.getElementById('gameOverScreen').classList.add('active');
+    
+    // Stop background music and play crash sound
+    stopBackgroundMusic();
+    playSound(crashSound);
 }
 
 function updateUI() {

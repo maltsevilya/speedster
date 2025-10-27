@@ -11,6 +11,7 @@ A fun and engaging 2D car racing game built with HTML5 Canvas, CSS3, and vanilla
 - **Distance Tracking**: Track how far you've traveled
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Mobile-Optimized**: Touch controls with on-screen buttons AND intuitive swipe gestures
+- **Audio Support**: Background music and sound effects (mute button included)
 - **Modern UI**: Beautiful gradient design with intuitive controls
 - **Game States**: Start screen, gameplay, and game over screen
 
@@ -86,16 +87,44 @@ car-game/
 ├── game.js            # Game logic and mechanics
 ├── logo.svg           # Game logo
 ├── favicon.svg        # Browser favicon
-└── README.md          # This file
+├── README.md          # This file
+├── AUDIO_GUIDE.md     # Complete guide for adding audio files
+└── audio/             # Audio files folder (needs to be created)
+    ├── background-music.mp3
+    ├── background-music.ogg
+    ├── crash.mp3
+    ├── crash.ogg
+    ├── score.mp3
+    ├── score.ogg
+    ├── accelerate.mp3
+    └── accelerate.ogg
 ```
+
+## Audio Setup 🎵
+
+The game includes full audio support! See **[AUDIO_GUIDE.md](AUDIO_GUIDE.md)** for detailed instructions.
+
+**Quick Start:**
+1. Create an `audio` folder in the game directory
+2. Add your audio files (see AUDIO_GUIDE.md for sources)
+3. The game works without audio files - they're optional!
+
+**Features:**
+- 🎵 Background music that loops during gameplay
+- 💥 Crash sound effect
+- 🎯 Score sound effect  
+- 🔇 Mute/unmute button (top-right corner)
+- 💾 Mute preference saved to browser
 
 ## Technical Details 🔧
 
 ### Technologies Used
 
 - **HTML5 Canvas**: For game rendering
+- **HTML5 Audio**: For background music and sound effects
 - **CSS3**: For styling and responsive design
 - **Vanilla JavaScript**: For game logic (no frameworks)
+- **LocalStorage**: For saving audio preferences
 
 ### Game Mechanics
 
@@ -113,16 +142,21 @@ car-game/
 - Edge
 - Any modern browser with HTML5 Canvas support
 
-## Future Enhancements 🎵
+## Future Enhancements 🚀
 
-Planned improvements (as per requirements):
+Completed improvements:
+- [✓] Background music
+- [✓] Sound effects for collisions and scoring
+- [✓] Mobile touch controls
+- [✓] Swipe gesture support
 
-- [ ] Background music
-- [ ] Sound effects for collisions and scoring
+Potential future additions:
 - [ ] Multiple levels with increasing difficulty
 - [ ] Power-ups (shields, speed boost)
 - [ ] Leaderboard system
 - [ ] Different car skins
+- [ ] Multiplayer mode
+- [ ] Day/night themes
 
 ## Development 👨‍💻
 
