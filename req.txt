@@ -1,0 +1,11 @@
+I need a web game that implements a car game. The game should be a simple 2D car game where the player controls a car and the goal is to reach the end of the level. 
+The game should be responsive and work on all devices. The game should have a score system. 
+The game should have a single player mode. The game should have a logo. The game should have a favicon. 
+
+The car moves along a road. The road has different obstacles to overcome. Every obstacle counts towards the score.
+The player should be able to move car left and right. The player can accelerate and decelerate the car using arrow keys.
+
+
+
+Next improvements:
+- The game should have a background music. The game should have a sound effects.

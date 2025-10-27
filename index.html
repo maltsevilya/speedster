@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedster - Car Racing Game</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.svg" alt="Speedster Logo" class="logo">
+                <h1>Speedster</h1>
+            </div>
+        </header>
+        
+        <div class="game-wrapper">
+            <div class="game-info">
+                <div class="info-panel">
+                    <div class="stat">
+                        <span class="label">Score:</span>
+                        <span class="value" id="score">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Speed:</span>
+                        <span class="value" id="speed">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Distance:</span>
+                        <span class="value" id="distance">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <canvas id="gameCanvas"></canvas>
+            
+            <div class="controls-help">
+                <p><strong>Controls:</strong></p>
+                <p>↑ - Accelerate | ↓ - Brake</p>
+                <p>← - Move Left | → - Move Right</p>
+                <p>SPACE - Start/Restart</p>
+            </div>
+        </div>
+        
+        <div id="startScreen" class="overlay active">
+            <div class="overlay-content">
+                <h2>Welcome to Speedster!</h2>
+                <p>Navigate your car through traffic and obstacles</p>
+                <p>Avoid collisions and score points!</p>
+                <button id="startButton" class="btn">Start Game</button>
+            </div>
+        </div>
+        
+        <div id="gameOverScreen" class="overlay">
+            <div class="overlay-content">
+                <h2>Game Over!</h2>
+                <p>Your Score: <span id="finalScore">0</span></p>
+                <p>Distance: <span id="finalDistance">0</span></p>
+                <button id="restartButton" class="btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
+

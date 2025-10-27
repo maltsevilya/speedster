@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="carGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" fill="#667eea" rx="6"/>
+  
+  <!-- Car body -->
+  <rect x="8" y="14" width="16" height="12" fill="url(#carGrad)" rx="1"/>
+  
+  <!-- Car window -->
+  <rect x="10" y="16" width="12" height="4" fill="#3498db" rx="1"/>
+  
+  <!-- Car wheels -->
+  <circle cx="11" cy="26" r="2.5" fill="#2c3e50"/>
+  <circle cx="21" cy="26" r="2.5" fill="#2c3e50"/>
+  
+  <!-- Car lights -->
+  <rect x="9" y="24" width="2" height="1" fill="#f1c40f"/>
+  <rect x="21" y="24" width="2" height="1" fill="#f1c40f"/>
+</svg>
+
