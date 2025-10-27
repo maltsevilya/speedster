@@ -201,6 +201,82 @@ h1 {
     }
 }
 
+/* Mobile Controls */
+.mobile-controls {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.mobile-controls-help {
+    display: none;
+}
+
+.desktop-controls {
+    display: block;
+}
+
+.control-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.control-btn svg {
+    width: 32px;
+    height: 32px;
+    display: block;
+    margin: 0 auto;
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.control-btn.pressed {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Show mobile controls on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .mobile-controls {
+        display: block;
+    }
+    
+    .desktop-controls {
+        display: none;
+    }
+    
+    .mobile-controls-help {
+        display: block;
+    }
+}
+
 @media (max-width: 480px) {
     body {
         padding: 10px;
@@ -216,6 +292,27 @@ h1 {
     
     .controls-help {
         font-size: 0.9em;
+    }
+    
+    .mobile-controls {
+        display: block;
+    }
+    
+    .desktop-controls {
+        display: none;
+    }
+    
+    .mobile-controls-help {
+        display: block;
+    }
+    
+    .control-btn {
+        padding: 15px;
+    }
+    
+    .control-btn svg {
+        width: 24px;
+        height: 24px;
     }
 }
 

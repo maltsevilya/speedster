@@ -29,6 +29,11 @@ let keys = {};
 let lastObstacleTime = 0;
 let obstacleInterval = 1500;
 
+// Touch controls
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+
 // Initialize the game
 function init() {
     canvas = document.getElementById('gameCanvas');
@@ -54,8 +59,147 @@ function init() {
     document.getElementById('startButton').addEventListener('click', startGame);
     document.getElementById('restartButton').addEventListener('click', restartGame);
     
+    // Mobile touch controls
+    setupMobileControls();
+    setupSwipeControls();
+    
     // Start game loop
     gameLoop();
+}
+
+function setupMobileControls() {
+    const btnLeft = document.getElementById('btnLeft');
+    const btnRight = document.getElementById('btnRight');
+    const btnUp = document.getElementById('btnUp');
+    const btnDown = document.getElementById('btnDown');
+    
+    // Left button
+    btnLeft.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys['ArrowLeft'] = true;
+        btnLeft.classList.add('pressed');
+    });
+    btnLeft.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys['ArrowLeft'] = false;
+        keys['lastLeft'] = false;
+        btnLeft.classList.remove('pressed');
+    });
+    
+    // Right button
+    btnRight.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys['ArrowRight'] = true;
+        btnRight.classList.add('pressed');
+    });
+    btnRight.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys['ArrowRight'] = false;
+        keys['lastRight'] = false;
+        btnRight.classList.remove('pressed');
+    });
+    
+    // Up button
+    btnUp.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys['ArrowUp'] = true;
+        btnUp.classList.add('pressed');
+    });
+    btnUp.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys['ArrowUp'] = false;
+        btnUp.classList.remove('pressed');
+    });
+    
+    // Down button
+    btnDown.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys['ArrowDown'] = true;
+        btnDown.classList.add('pressed');
+    });
+    btnDown.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keys['ArrowDown'] = false;
+        btnDown.classList.remove('pressed');
+    });
+    
+    // Also add click events for mouse/desktop testing
+    btnLeft.addEventListener('mousedown', () => keys['ArrowLeft'] = true);
+    btnLeft.addEventListener('mouseup', () => { keys['ArrowLeft'] = false; keys['lastLeft'] = false; });
+    
+    btnRight.addEventListener('mousedown', () => keys['ArrowRight'] = true);
+    btnRight.addEventListener('mouseup', () => { keys['ArrowRight'] = false; keys['lastRight'] = false; });
+    
+    btnUp.addEventListener('mousedown', () => keys['ArrowUp'] = true);
+    btnUp.addEventListener('mouseup', () => keys['ArrowUp'] = false);
+    
+    btnDown.addEventListener('mousedown', () => keys['ArrowDown'] = true);
+    btnDown.addEventListener('mouseup', () => keys['ArrowDown'] = false);
+}
+
+function setupSwipeControls() {
+    // Add swipe detection on the canvas for alternative control
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+}
+
+function handleTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchStartTime = Date.now();
+}
+
+function handleTouchEnd(e) {
+    e.preventDefault();
+    if (e.touches.length > 0) return;
+    
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+    const deltaTime = Date.now() - touchStartTime;
+    
+    // Minimum swipe distance
+    const minSwipeDistance = 30;
+    
+    // Determine swipe direction
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    
+    // Horizontal swipe (lane change)
+    if (absX > absY && absX > minSwipeDistance && deltaTime < 300) {
+        if (deltaX > 0) {
+            // Swipe right
+            if (car.lane < CONFIG.laneCount - 1) {
+                car.lane++;
+            }
+        } else {
+            // Swipe left
+            if (car.lane > 0) {
+                car.lane--;
+            }
+        }
+    }
+    // Vertical swipe (speed control)
+    else if (absY > absX && absY > minSwipeDistance && deltaTime < 300) {
+        if (deltaY < 0) {
+            // Swipe up - brief acceleration
+            car.speed = Math.min(car.speed + 2, CONFIG.maxSpeed);
+        } else {
+            // Swipe down - brief deceleration
+            car.speed = Math.max(car.speed - 2, CONFIG.minSpeed);
+        }
+    }
+    // Tap (if very short distance and time)
+    else if (absX < 10 && absY < 10 && deltaTime < 200) {
+        if (gameState === 'start') {
+            startGame();
+        } else if (gameState === 'gameOver') {
+            restartGame();
+        }
+    }
 }
 
 function resizeCanvas() {

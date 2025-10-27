@@ -10,18 +10,33 @@ A fun and engaging 2D car racing game built with HTML5 Canvas, CSS3, and vanilla
 - **Speed Control**: Accelerate and brake to control your speed (0-150)
 - **Distance Tracking**: Track how far you've traveled
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **Mobile-Optimized**: Touch controls with on-screen buttons AND intuitive swipe gestures
 - **Modern UI**: Beautiful gradient design with intuitive controls
 - **Game States**: Start screen, gameplay, and game over screen
 
 ## How to Play 🎮
 
-### Controls
+### Desktop Controls
 
 - **↑ (Up Arrow)**: Accelerate
 - **↓ (Down Arrow)**: Brake/Decelerate
 - **← (Left Arrow)**: Move to left lane
 - **→ (Right Arrow)**: Move to right lane
 - **SPACE**: Start game / Restart after game over
+
+### Mobile Controls
+
+The game fully supports mobile devices with two control methods:
+
+**Method 1: On-Screen Buttons**
+- Four arrow buttons appear at the bottom of the screen
+- Tap and hold to accelerate, brake, or change lanes
+
+**Method 2: Swipe Gestures (on game canvas)**
+- **Swipe Left/Right**: Change lanes
+- **Swipe Up**: Accelerate
+- **Swipe Down**: Brake
+- **Tap**: Start game or restart after game over
 
 ### Objective
 

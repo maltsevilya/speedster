@@ -36,11 +36,44 @@
             
             <canvas id="gameCanvas"></canvas>
             
-            <div class="controls-help">
-                <p><strong>Controls:</strong></p>
+            <div class="controls-help desktop-controls">
+                <p><strong>Keyboard Controls:</strong></p>
                 <p>↑ - Accelerate | ↓ - Brake</p>
                 <p>← - Move Left | → - Move Right</p>
                 <p>SPACE - Start/Restart</p>
+            </div>
+            
+            <div class="controls-help mobile-controls-help">
+                <p><strong>Touch Controls:</strong></p>
+                <p>Use buttons below OR swipe on game area</p>
+                <p>Swipe left/right to change lanes</p>
+                <p>Swipe up/down to adjust speed</p>
+            </div>
+            
+            <!-- Mobile Controls -->
+            <div id="mobileControls" class="mobile-controls">
+                <div class="control-row">
+                    <button class="control-btn" id="btnLeft">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn" id="btnUp">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn" id="btnDown">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn" id="btnRight">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
         
