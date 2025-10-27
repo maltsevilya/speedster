@@ -5,6 +5,7 @@ A fun and engaging 2D car racing game built with HTML5 Canvas, CSS3, and vanilla
 ## Features ✨
 
 - **Smooth Gameplay**: Responsive controls with smooth car movement and lane switching
+- **Adaptive Difficulty**: Automatically adjusts challenge level based on your device (easier on mobile, harder on desktop)
 - **Progressive Difficulty**: Game becomes more challenging over time with faster obstacles and increased spawn rates
 - **Dynamic Obstacles**: Three types of obstacles (cars, traffic cones, barriers) that spawn randomly
 - **Multi-Obstacle Spawning**: Multiple obstacles appear simultaneously at higher difficulty levels
@@ -55,15 +56,24 @@ The game gets progressively harder as you play:
 
 - **Every 100 meters**: Difficulty level increases
 - **Consistent Progression**: Distance increases at a fixed rate based on game speed, NOT your car's speed (ensures fair difficulty across all devices)
-- **Level 1-2**: Single obstacles spawn at a moderate pace
-- **Level 3+**: 30% chance of 2 obstacles appearing simultaneously
+- **Device-Adaptive Difficulty**: The game automatically adjusts to your device for optimal experience
+
+#### Desktop Difficulty:
+- **Speed Range**: 3 → 8 (faster obstacles at high levels)
+- **Spawn Rate**: 1500ms → 600ms (more frequent obstacles)
+- **Level 3+**: 30% chance of 2 obstacles simultaneously
 - **Level 5+**: Higher chance of multiple obstacles
-- **Speed Increase**: Obstacles move faster as you progress (base speed increases from 3 to max 8)
-- **Spawn Rate**: Obstacles appear more frequently (interval decreases from 1500ms to 600ms minimum)
+
+#### Mobile Difficulty (Easier):
+- **Speed Range**: 2.5 → 6 (25% slower than desktop)
+- **Spawn Rate**: 2000ms → 800ms (33% more time between obstacles)
+- **Level 3+**: 15% chance of 2 obstacles (50% less than desktop)
+- **Level 5+**: 25% chance (lower than desktop)
+- **Slower Ramp-Up**: Difficulty increases 30% slower
 
 **Challenge yourself**: Can you reach Level 10? 🏆
 
-**Note**: Your car's acceleration/braking affects your ability to dodge obstacles, but NOT the difficulty progression. This ensures a fair and consistent experience on all devices!
+**Note**: Your car's acceleration/braking affects your ability to dodge obstacles, but NOT the difficulty progression. Mobile players get easier difficulty to accommodate touch controls!
 
 ## Installation & Setup 🚀
 
@@ -149,12 +159,14 @@ The game includes full audio support! See **[AUDIO_GUIDE.md](AUDIO_GUIDE.md)** f
 
 - **Lane System**: 3-lane road with smooth lane transitions
 - **Collision Detection**: Precise collision detection with small margins for better gameplay
-- **Progressive Difficulty System**: 
+- **Adaptive Difficulty System**: 
+  - Automatic device detection (mobile vs desktop)
+  - Mobile gets 25-30% easier difficulty for better touch control experience
   - Distance progression at fixed rate (independent of player speed for consistency)
   - Difficulty level calculated based on distance traveled (every 100m = +1 level)
-  - Base speed increases dynamically (3 → 8 max) based on distance
-  - Obstacle spawn interval decreases dynamically (1500ms → 600ms min)
-  - Multiple obstacles spawn at higher levels
+  - Base speed increases dynamically (desktop: 3→8, mobile: 2.5→6)
+  - Obstacle spawn interval decreases dynamically (desktop: 1500→600ms, mobile: 2000→800ms)
+  - Multiple obstacles spawn at higher levels (reduced frequency on mobile)
 - **Speed Physics**: Player-controlled acceleration, deceleration, and friction with anti-flicker deadzone (affects dodging, not difficulty)
 - **Responsive Canvas**: Automatically adjusts to screen size
 
@@ -210,10 +222,26 @@ const CONFIG = {
 };
 ```
 
+**Mobile Configuration** (easier difficulty):
+```javascript
+const MOBILE_CONFIG = {
+    baseSpeed: 2.5,                    // Slower starting speed
+    baseSpeedIncreaseRate: 0.0007,     // 30% slower ramp-up
+    maxBaseSpeed: 6,                   // 25% lower max speed
+    minObstacleInterval: 800,          // More time at max difficulty
+    maxObstacleInterval: 2000,         // Slower starting spawn
+    difficultyIncreaseRate: 0.015,     // 25% slower progression
+    multiObstacleChanceLevel3: 0.15,   // 50% less multi-obstacles
+    multiObstacleChanceLevel5: 0.25,   // Lower chance
+};
+```
+
 **Difficulty Tuning Tips:**
+- Game automatically detects device type and applies appropriate config
 - Increase `baseSpeedIncreaseRate` for faster difficulty ramp-up
 - Decrease `minObstacleInterval` to make the game more intense at high levels
 - Adjust `difficultyIncreaseRate` to change how quickly obstacles spawn more frequently
+- Modify `MOBILE_CONFIG` values to fine-tune mobile experience
 
 ## Credits 🙏
 

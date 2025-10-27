@@ -1,4 +1,11 @@
-// Game Configuration
+// Device detection
+const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768) ||
+           ('ontouchstart' in window);
+};
+
+// Game Configuration - Desktop
 const CONFIG = {
     roadWidth: 400,
     laneCount: 3,
@@ -19,6 +26,18 @@ const CONFIG = {
     difficultyIncreaseRate: 0.02, // Difficulty increase per distance unit
 };
 
+// Mobile-specific configuration (easier difficulty)
+const MOBILE_CONFIG = {
+    baseSpeed: 2.5, // Slower starting speed
+    baseSpeedIncreaseRate: 0.0007, // Slower speed ramp-up (30% slower)
+    maxBaseSpeed: 6, // Lower max speed (25% lower)
+    minObstacleInterval: 800, // More time between obstacles at max difficulty
+    maxObstacleInterval: 2000, // Slower starting spawn rate
+    difficultyIncreaseRate: 0.015, // Slower difficulty progression (25% slower)
+    multiObstacleChanceLevel3: 0.15, // Lower chance at level 3 (was 0.3)
+    multiObstacleChanceLevel5: 0.25, // Lower chance at level 5 (was 0.3 higher)
+};
+
 // Game State
 let canvas, ctx;
 let gameState = 'start'; // start, playing, gameOver
@@ -26,6 +45,7 @@ let score = 0;
 let distance = 0;
 let speed = 5;
 let difficultyLevel = 1;
+let isMobile = false;
 let currentBaseSpeed = CONFIG.baseSpeed;
 let currentObstacleInterval = CONFIG.maxObstacleInterval;
 
@@ -53,6 +73,10 @@ let isMuted = false;
 function init() {
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
+    
+    // Detect mobile device
+    isMobile = isMobileDevice();
+    console.log(isMobile ? 'Mobile device detected - easier difficulty applied' : 'Desktop device detected');
     
     // Set canvas size
     resizeCanvas();
@@ -355,10 +379,15 @@ function startGame() {
     obstacles = [];
     lastObstacleTime = Date.now();
     
-    // Reset difficulty
+    // Reset difficulty (use mobile config if on mobile device)
     difficultyLevel = 1;
-    currentBaseSpeed = CONFIG.baseSpeed;
-    currentObstacleInterval = CONFIG.maxObstacleInterval;
+    if (isMobile) {
+        currentBaseSpeed = MOBILE_CONFIG.baseSpeed;
+        currentObstacleInterval = MOBILE_CONFIG.maxObstacleInterval;
+    } else {
+        currentBaseSpeed = CONFIG.baseSpeed;
+        currentObstacleInterval = CONFIG.maxObstacleInterval;
+    }
     
     car.x = canvas.width / 2 - CONFIG.carWidth / 2;
     car.speed = 0;
@@ -418,17 +447,20 @@ function updateDifficulty() {
     // Calculate difficulty level based on distance (every 100m increases difficulty)
     difficultyLevel = 1 + Math.floor(distance / 100);
     
+    // Use mobile-specific config if on mobile device
+    const config = isMobile ? MOBILE_CONFIG : CONFIG;
+    
     // Increase base speed gradually (obstacles move faster)
     currentBaseSpeed = Math.min(
-        CONFIG.baseSpeed + (distance * CONFIG.baseSpeedIncreaseRate),
-        CONFIG.maxBaseSpeed
+        config.baseSpeed + (distance * config.baseSpeedIncreaseRate),
+        config.maxBaseSpeed
     );
     
     // Decrease obstacle spawn interval (obstacles appear more frequently)
-    const difficultyFactor = 1 + (distance * CONFIG.difficultyIncreaseRate);
+    const difficultyFactor = 1 + (distance * config.difficultyIncreaseRate);
     currentObstacleInterval = Math.max(
-        CONFIG.maxObstacleInterval / difficultyFactor,
-        CONFIG.minObstacleInterval
+        config.maxObstacleInterval / difficultyFactor,
+        config.minObstacleInterval
     );
 }
 
@@ -495,12 +527,16 @@ function spawnObstacles() {
         const types = ['car', 'cone', 'barrier'];
         
         // Determine number of obstacles to spawn based on difficulty
+        // Use mobile-specific chances if on mobile (lower probability)
         let numObstacles = 1;
-        if (difficultyLevel >= 3 && Math.random() < 0.3) {
-            numObstacles = 2; // 30% chance of 2 obstacles at level 3+
+        const level3Chance = isMobile ? MOBILE_CONFIG.multiObstacleChanceLevel3 : 0.3;
+        const level5Chance = isMobile ? MOBILE_CONFIG.multiObstacleChanceLevel5 : 0.3;
+        
+        if (difficultyLevel >= 3 && Math.random() < level3Chance) {
+            numObstacles = 2;
         }
-        if (difficultyLevel >= 5 && Math.random() < 0.15) {
-            numObstacles = 2; // Higher chance at level 5+
+        if (difficultyLevel >= 5 && Math.random() < level5Chance) {
+            numObstacles = 2;
         }
         
         // Track which lanes are occupied to avoid duplicates
