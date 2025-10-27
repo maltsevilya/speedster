@@ -54,6 +54,7 @@ The game fully supports mobile devices with two control methods:
 The game gets progressively harder as you play:
 
 - **Every 100 meters**: Difficulty level increases
+- **Consistent Progression**: Distance increases at a fixed rate based on game speed, NOT your car's speed (ensures fair difficulty across all devices)
 - **Level 1-2**: Single obstacles spawn at a moderate pace
 - **Level 3+**: 30% chance of 2 obstacles appearing simultaneously
 - **Level 5+**: Higher chance of multiple obstacles
@@ -61,6 +62,8 @@ The game gets progressively harder as you play:
 - **Spawn Rate**: Obstacles appear more frequently (interval decreases from 1500ms to 600ms minimum)
 
 **Challenge yourself**: Can you reach Level 10? 🏆
+
+**Note**: Your car's acceleration/braking affects your ability to dodge obstacles, but NOT the difficulty progression. This ensures a fair and consistent experience on all devices!
 
 ## Installation & Setup 🚀
 
@@ -147,11 +150,12 @@ The game includes full audio support! See **[AUDIO_GUIDE.md](AUDIO_GUIDE.md)** f
 - **Lane System**: 3-lane road with smooth lane transitions
 - **Collision Detection**: Precise collision detection with small margins for better gameplay
 - **Progressive Difficulty System**: 
+  - Distance progression at fixed rate (independent of player speed for consistency)
   - Difficulty level calculated based on distance traveled (every 100m = +1 level)
   - Base speed increases dynamically (3 → 8 max) based on distance
   - Obstacle spawn interval decreases dynamically (1500ms → 600ms min)
   - Multiple obstacles spawn at higher levels
-- **Speed Physics**: Realistic acceleration, deceleration, and friction with anti-flicker deadzone
+- **Speed Physics**: Player-controlled acceleration, deceleration, and friction with anti-flicker deadzone (affects dodging, not difficulty)
 - **Responsive Canvas**: Automatically adjusts to screen size
 
 ### Browser Compatibility

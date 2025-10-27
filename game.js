@@ -397,8 +397,9 @@ function update() {
         roadOffset = 0;
     }
     
-    // Update distance
-    distance += speed * 0.1;
+    // Update distance based on fixed game speed (not player's car speed)
+    // This ensures consistent difficulty progression across all devices
+    distance += currentBaseSpeed * 0.15;
     
     // Spawn obstacles
     spawnObstacles();
