@@ -407,10 +407,15 @@ function updateCarMovement() {
     } else if (keys['ArrowDown']) {
         car.speed = Math.max(car.speed - CONFIG.deceleration, CONFIG.minSpeed);
     } else {
-        // Apply friction
-        if (car.speed > 5) {
+        // Apply friction with deadzone to prevent flickering
+        const targetSpeed = 5;
+        const deadzone = 0.1;
+        
+        if (Math.abs(car.speed - targetSpeed) < deadzone) {
+            car.speed = targetSpeed; // Snap to target speed
+        } else if (car.speed > targetSpeed) {
             car.speed -= CONFIG.friction;
-        } else if (car.speed < 5) {
+        } else if (car.speed < targetSpeed) {
             car.speed += CONFIG.friction * 0.5;
         }
     }
@@ -520,7 +525,7 @@ function gameOver() {
 
 function updateUI() {
     document.getElementById('score').textContent = score;
-    document.getElementById('speed').textContent = Math.floor(speed * 10);
+    document.getElementById('speed').textContent = Math.round(speed * 10);
     document.getElementById('distance').textContent = Math.floor(distance) + 'm';
 }
 
