@@ -92,8 +92,9 @@ h1 {
 }
 
 .info-panel {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 15px;
     border-radius: 10px;
@@ -223,8 +224,8 @@ h1 {
     }
     
     .info-panel {
-        flex-direction: column;
-        gap: 10px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
     }
     
     .value {
@@ -328,6 +329,19 @@ h1 {
     
     #gameCanvas {
         height: 400px;
+    }
+    
+    .info-panel {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .value {
+        font-size: 1.3em;
+    }
+    
+    .label {
+        font-size: 0.8em;
     }
     
     .controls-help {

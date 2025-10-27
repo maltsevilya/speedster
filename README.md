@@ -5,10 +5,13 @@ A fun and engaging 2D car racing game built with HTML5 Canvas, CSS3, and vanilla
 ## Features ✨
 
 - **Smooth Gameplay**: Responsive controls with smooth car movement and lane switching
+- **Progressive Difficulty**: Game becomes more challenging over time with faster obstacles and increased spawn rates
 - **Dynamic Obstacles**: Three types of obstacles (cars, traffic cones, barriers) that spawn randomly
+- **Multi-Obstacle Spawning**: Multiple obstacles appear simultaneously at higher difficulty levels
 - **Score System**: Earn points for each obstacle you successfully pass
 - **Speed Control**: Accelerate and brake to control your speed (0-150)
 - **Distance Tracking**: Track how far you've traveled
+- **Level System**: Difficulty level increases every 100 meters
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Mobile-Optimized**: Touch controls with on-screen buttons AND intuitive swipe gestures
 - **Audio Support**: Background music and sound effects (mute button included)
@@ -45,6 +48,19 @@ The game fully supports mobile devices with two control methods:
 - Avoid colliding with obstacles (blue cars, traffic cones, barriers)
 - Score points by successfully passing obstacles (10 points each)
 - Try to travel as far as possible!
+
+### Difficulty Progression 🎯
+
+The game gets progressively harder as you play:
+
+- **Every 100 meters**: Difficulty level increases
+- **Level 1-2**: Single obstacles spawn at a moderate pace
+- **Level 3+**: 30% chance of 2 obstacles appearing simultaneously
+- **Level 5+**: Higher chance of multiple obstacles
+- **Speed Increase**: Obstacles move faster as you progress (base speed increases from 3 to max 8)
+- **Spawn Rate**: Obstacles appear more frequently (interval decreases from 1500ms to 600ms minimum)
+
+**Challenge yourself**: Can you reach Level 10? 🏆
 
 ## Installation & Setup 🚀
 
@@ -130,8 +146,12 @@ The game includes full audio support! See **[AUDIO_GUIDE.md](AUDIO_GUIDE.md)** f
 
 - **Lane System**: 3-lane road with smooth lane transitions
 - **Collision Detection**: Precise collision detection with small margins for better gameplay
-- **Dynamic Difficulty**: Obstacle spawn rate increases as you travel further
-- **Speed Physics**: Realistic acceleration, deceleration, and friction
+- **Progressive Difficulty System**: 
+  - Difficulty level calculated based on distance traveled (every 100m = +1 level)
+  - Base speed increases dynamically (3 → 8 max) based on distance
+  - Obstacle spawn interval decreases dynamically (1500ms → 600ms min)
+  - Multiple obstacles spawn at higher levels
+- **Speed Physics**: Realistic acceleration, deceleration, and friction with anti-flicker deadzone
 - **Responsive Canvas**: Automatically adjusts to screen size
 
 ### Browser Compatibility
@@ -178,8 +198,18 @@ const CONFIG = {
     deceleration: 0.2,
     friction: 0.05,
     baseSpeed: 3,
+    baseSpeedIncreaseRate: 0.001, // How fast obstacles speed up
+    maxBaseSpeed: 8, // Maximum obstacle speed
+    minObstacleInterval: 600, // Minimum time between obstacles (ms)
+    maxObstacleInterval: 1500, // Starting time between obstacles (ms)
+    difficultyIncreaseRate: 0.02, // How fast difficulty increases
 };
 ```
+
+**Difficulty Tuning Tips:**
+- Increase `baseSpeedIncreaseRate` for faster difficulty ramp-up
+- Decrease `minObstacleInterval` to make the game more intense at high levels
+- Adjust `difficultyIncreaseRate` to change how quickly obstacles spawn more frequently
 
 ## Credits 🙏
 

@@ -12,6 +12,11 @@ const CONFIG = {
     deceleration: 0.2,
     friction: 0.05,
     baseSpeed: 3,
+    baseSpeedIncreaseRate: 0.001, // Speed increase per distance unit
+    maxBaseSpeed: 8, // Maximum base speed
+    minObstacleInterval: 600, // Minimum time between obstacles (ms)
+    maxObstacleInterval: 1500, // Maximum time between obstacles (ms)
+    difficultyIncreaseRate: 0.02, // Difficulty increase per distance unit
 };
 
 // Game State
@@ -20,6 +25,9 @@ let gameState = 'start'; // start, playing, gameOver
 let score = 0;
 let distance = 0;
 let speed = 5;
+let difficultyLevel = 1;
+let currentBaseSpeed = CONFIG.baseSpeed;
+let currentObstacleInterval = CONFIG.maxObstacleInterval;
 
 // Game Objects
 let car;
@@ -347,6 +355,11 @@ function startGame() {
     obstacles = [];
     lastObstacleTime = Date.now();
     
+    // Reset difficulty
+    difficultyLevel = 1;
+    currentBaseSpeed = CONFIG.baseSpeed;
+    currentObstacleInterval = CONFIG.maxObstacleInterval;
+    
     car.x = canvas.width / 2 - CONFIG.carWidth / 2;
     car.speed = 0;
     car.lane = 1;
@@ -375,6 +388,9 @@ function update() {
     // Handle car movement
     updateCarMovement();
     
+    // Update difficulty based on progress
+    updateDifficulty();
+    
     // Update road animation
     roadOffset += speed;
     if (roadOffset > 40) {
@@ -395,6 +411,24 @@ function update() {
     
     // Update UI
     updateUI();
+}
+
+function updateDifficulty() {
+    // Calculate difficulty level based on distance (every 100m increases difficulty)
+    difficultyLevel = 1 + Math.floor(distance / 100);
+    
+    // Increase base speed gradually (obstacles move faster)
+    currentBaseSpeed = Math.min(
+        CONFIG.baseSpeed + (distance * CONFIG.baseSpeedIncreaseRate),
+        CONFIG.maxBaseSpeed
+    );
+    
+    // Decrease obstacle spawn interval (obstacles appear more frequently)
+    const difficultyFactor = 1 + (distance * CONFIG.difficultyIncreaseRate);
+    currentObstacleInterval = Math.max(
+        CONFIG.maxObstacleInterval / difficultyFactor,
+        CONFIG.minObstacleInterval
+    );
 }
 
 function updateCarMovement() {
@@ -451,25 +485,51 @@ function updateCarMovement() {
 
 function spawnObstacles() {
     const currentTime = Date.now();
-    const interval = Math.max(800, obstacleInterval - (distance * 2));
     
-    if (currentTime - lastObstacleTime > interval) {
+    if (currentTime - lastObstacleTime > currentObstacleInterval) {
         const laneWidth = CONFIG.roadWidth / CONFIG.laneCount;
         const roadLeft = (canvas.width - CONFIG.roadWidth) / 2;
-        const lane = Math.floor(Math.random() * CONFIG.laneCount);
         
         // Random obstacle type
         const types = ['car', 'cone', 'barrier'];
-        const type = types[Math.floor(Math.random() * types.length)];
         
-        obstacles.push({
-            x: roadLeft + (lane * laneWidth) + (laneWidth - CONFIG.obstacleWidth) / 2,
-            y: -CONFIG.obstacleHeight,
-            width: CONFIG.obstacleWidth,
-            height: CONFIG.obstacleHeight,
-            type: type,
-            passed: false
-        });
+        // Determine number of obstacles to spawn based on difficulty
+        let numObstacles = 1;
+        if (difficultyLevel >= 3 && Math.random() < 0.3) {
+            numObstacles = 2; // 30% chance of 2 obstacles at level 3+
+        }
+        if (difficultyLevel >= 5 && Math.random() < 0.15) {
+            numObstacles = 2; // Higher chance at level 5+
+        }
+        
+        // Track which lanes are occupied to avoid duplicates
+        const occupiedLanes = new Set();
+        
+        for (let i = 0; i < numObstacles; i++) {
+            // Find an available lane
+            let lane;
+            let attempts = 0;
+            do {
+                lane = Math.floor(Math.random() * CONFIG.laneCount);
+                attempts++;
+            } while (occupiedLanes.has(lane) && attempts < 10);
+            
+            // Only spawn if we found a unique lane
+            if (!occupiedLanes.has(lane)) {
+                occupiedLanes.add(lane);
+                
+                const type = types[Math.floor(Math.random() * types.length)];
+                
+                obstacles.push({
+                    x: roadLeft + (lane * laneWidth) + (laneWidth - CONFIG.obstacleWidth) / 2,
+                    y: -CONFIG.obstacleHeight,
+                    width: CONFIG.obstacleWidth,
+                    height: CONFIG.obstacleHeight,
+                    type: type,
+                    passed: false
+                });
+            }
+        }
         
         lastObstacleTime = currentTime;
     }
@@ -478,7 +538,7 @@ function spawnObstacles() {
 function updateObstacles() {
     for (let i = obstacles.length - 1; i >= 0; i--) {
         const obstacle = obstacles[i];
-        obstacle.y += speed + CONFIG.baseSpeed;
+        obstacle.y += speed + currentBaseSpeed;
         
         // Check if obstacle is passed
         if (!obstacle.passed && obstacle.y > car.y + car.height) {
@@ -525,6 +585,7 @@ function gameOver() {
 
 function updateUI() {
     document.getElementById('score').textContent = score;
+    document.getElementById('level').textContent = difficultyLevel;
     document.getElementById('speed').textContent = Math.round(speed * 10);
     document.getElementById('distance').textContent = Math.floor(distance) + 'm';
 }
